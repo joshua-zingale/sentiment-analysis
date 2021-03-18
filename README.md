@@ -1,4 +1,4 @@
-# sentiment-analysis
+# Sentiment Analysis
 
 ➢ Goal: Develop a model to predict the star rating of a
 review based on the text within the review.
