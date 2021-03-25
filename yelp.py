@@ -11,6 +11,58 @@ def get_request_headers() -> dict:
 	return headers
 
 
+def get_reviews(url: str, max_reviews: int = -1) -> dict:
+	'''
+	Gets all of the reviews along with their respective star ratings for a supplied Yelp listing.
+	:param url: The base url of a Yelp page. e.g. "https://www.yelp.com/biz/chuck-e-cheese-national-city"
+	:param max_reviews: The maximum number of reviews the function will grab. If set to a negative number, there will be no maximum.
+	:return: The reviews.
+	'''
+
+	business_id = get_id_from_bussiness_page(url)
+	headers = get_request_headers()
+
+	reviews = []
+
+	i = 0
+
+	# Loop will end if 1) the max number of reviews has been reached
+	# after scraping one set of reviews or 2) if there are no more reviews.
+	while i < max_reviews or max_reviews < 0:
+
+		starting_i = i
+
+		response = requests.get("https://www.yelp.com/biz/" + business_id + "/review_feed?rl=en&sort_by=date_desc&q=&start=" + str(i))
+
+
+		new_reviews = json.loads(response.text)["reviews"]
+
+
+		for review in new_reviews:
+
+			# Stop collecting reviews if maximum has been reached.
+			if i == max_reviews:
+				break
+
+			reviews.append(review)
+
+			i += 1
+
+		# If the index has not advanced within this while iteration,
+		# then no new reviews were added and no more remain.
+		if starting_i == i:
+			break
+
+	return reviews
+
+
+
+
+	
+
+
+
+
 def get_id_from_bussiness_page(url: str) -> str:
 	'''
 	Gets the internal Yelp id of a business given its Yelp page URL.
