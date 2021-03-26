@@ -57,12 +57,6 @@ def get_reviews(url: str, max_reviews: int = -1) -> dict:
 
 
 
-
-	
-
-
-
-
 def get_id_from_bussiness_page(url: str) -> str:
 	'''
 	Gets the internal Yelp id of a business given its Yelp page URL.
