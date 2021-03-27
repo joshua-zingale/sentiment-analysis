@@ -34,7 +34,6 @@ def get_reviews(url: str, max_reviews: int = -1) -> dict:
 
 		response = requests.get("https://www.yelp.com/biz/" + business_id + "/review_feed?rl=en&sort_by=date_desc&q=&start=" + str(i), headers)
 
-
 		new_reviews = json.loads(response.text)["reviews"]
 
 
@@ -43,6 +42,11 @@ def get_reviews(url: str, max_reviews: int = -1) -> dict:
 			# Stop collecting reviews if maximum has been reached.
 			if i == max_reviews:
 				break
+			text = review['comment']['text']
+
+			# Fixing bug where all apostrophes are replaced by their html code &#39;
+			text = text.replace("&#39;", "'")
+			review['comment']['text'] = text
 
 			reviews.append(review)
 
