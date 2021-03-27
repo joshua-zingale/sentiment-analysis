@@ -68,9 +68,13 @@ def get_reviews(url: str, max_reviews: int = -1, progress_reports = -1) -> dict:
 				break
 			text = review['comment']['text']
 
-			# Fixing bug where all apostrophes are replaced by their html code &#39;
+			# Fixing bugs where characters are replaced with html codes
+			# and some other things
 			text = text.replace("&#39;", "'")
+			text = text.replace("&#34;", '"')
+			text = text.replace("<br>", '\n')
 			review['comment']['text'] = text
+			
 
 			reviews.append(review)
 
