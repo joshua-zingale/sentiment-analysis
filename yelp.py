@@ -16,7 +16,7 @@ def get_reviews(url: str, max_reviews: int = -1) -> dict:
 	Gets all of the reviews along with their respective star ratings for a supplied Yelp listing.
 	:param url: The base url of a Yelp page. e.g. "https://www.yelp.com/biz/chuck-e-cheese-national-city"
 	:param max_reviews: The maximum number of reviews the function will grab. If set to a negative number, there will be no maximum.
-	:return: The reviews.
+	:return: An array of dictionaries, each representing a single review. There is a buch of data for each review; useful keys are ['comment']['text'] for the review text and ['rating'] for its associated star rating.
 	'''
 
 	business_id = get_id_from_bussiness_page(url)
@@ -32,7 +32,7 @@ def get_reviews(url: str, max_reviews: int = -1) -> dict:
 
 		starting_i = i
 
-		response = requests.get("https://www.yelp.com/biz/" + business_id + "/review_feed?rl=en&sort_by=date_desc&q=&start=" + str(i))
+		response = requests.get("https://www.yelp.com/biz/" + business_id + "/review_feed?rl=en&sort_by=date_desc&q=&start=" + str(i), headers)
 
 
 		new_reviews = json.loads(response.text)["reviews"]
