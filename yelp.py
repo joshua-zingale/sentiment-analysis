@@ -1,5 +1,6 @@
 import requests
 import json
+import time
 from bs4 import BeautifulSoup as bs
 
 def get_request_headers() -> dict:
@@ -11,13 +12,16 @@ def get_request_headers() -> dict:
 	return headers
 
 
-def get_reviews(url: str, max_reviews: int = -1) -> dict:
+def get_reviews(url: str, max_reviews: int = -1, progress_reports = -1) -> dict:
 	'''
 	Gets all of the reviews along with their respective star ratings for a supplied Yelp listing.
 	:param url: The base url of a Yelp page. e.g. "https://www.yelp.com/biz/chuck-e-cheese-national-city"
 	:param max_reviews: The maximum number of reviews the function will grab. If set to a negative number, there will be no maximum.
+	:param progress_reports: If greater than 0, prints updates every progress_reports seconds on the number of reviews fetched.
 	:return: An array of dictionaries, each representing a single review. There is a buch of data for each review; useful keys are ['comment']['text'] for the review text and ['rating'] for its associated star rating.
 	'''
+	# For progress_reports
+	last_time = time.time()
 
 	business_id = get_id_from_bussiness_page(url)
 	headers = get_request_headers()
@@ -30,11 +34,31 @@ def get_reviews(url: str, max_reviews: int = -1) -> dict:
 	# after scraping one set of reviews or 2) if there are no more reviews.
 	while i < max_reviews or max_reviews < 0:
 
+		#This is incremented by 10 if a page of reviews fails to load.
+		skipped = 0
+
+		# 
+		if progress_reports > 0 and time.time() - last_time > progress_reports:
+			print("Number of reviews fetched:", i)
+			last_time = time.time()
+
 		starting_i = i
+		
+		response = requests.get("https://www.yelp.com/biz/" + business_id + "/review_feed?rl=en&sort_by=date_desc&q=&start=" + str(i + skipped), headers)
 
-		response = requests.get("https://www.yelp.com/biz/" + business_id + "/review_feed?rl=en&sort_by=date_desc&q=&start=" + str(i), headers)
+		try:
+			new_reviews = json.loads(response.text)["reviews"]
 
-		new_reviews = json.loads(response.text)["reviews"]
+		except json.decoder.JSONDecodeError:
+			# skip current page if it cannot be decoded
+			skipped += 10
+
+			# If this many reviews have been skipped, the function is stuck in a loop and no more reviews will be loaded
+			# This allows for the reviews that were scraped to be returned
+			if skipped > 100000:
+				break
+			continue
+	
 
 
 		for review in new_reviews:
@@ -56,7 +80,7 @@ def get_reviews(url: str, max_reviews: int = -1) -> dict:
 		# then no new reviews were added and no more remain.
 		if starting_i == i:
 			break
-
+	
 	return reviews
 
 
