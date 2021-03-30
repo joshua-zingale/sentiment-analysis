@@ -37,8 +37,10 @@ def get_reviews(url: str, max_reviews: int = -1, progress_reports = -1) -> dict:
 		#This is incremented by 10 if a page of reviews fails to load.
 		skipped = 0
 
-		# 
-		if progress_reports > 0 and time.time() - last_time > progress_reports:
+		time_delta = time.time() - last_time
+
+		# Print updates if enabled and time has passed
+		if progress_reports > 0 and  time_delta > progress_reports:
 			print("Number of reviews fetched:", i)
 			last_time = time.time()
 
