@@ -100,7 +100,7 @@ class StringModel():
 
     def load(self, path):
         '''
-        Loads a a model from persistant storage. Currently, the embedding used with the model is not saved nor loaded, so it must be set manually.
+        Loads a a model from persistant storage. Currently, the embedding used with the model is not saved nor loaded, so it must be set manually. To avoid issues, always use the default embedding (do not specify one when instantiating object).
         :param path: That file path to the stored model.
         '''
         self.model = keras.models.load_model(path)
