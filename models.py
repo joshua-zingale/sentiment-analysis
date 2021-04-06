@@ -9,44 +9,42 @@ class StringModel():
     '''
     An LSTM model which makes binary predictions based on inputed strings.
     '''
-    def __init__(self, metrics = ['accuracy'], embedding = None, max_words = 40):
+    def __init__(self, model, metrics: list = ['accuracy'], embedding: dict = None):
         '''
         Creates the model.
+        :param model: The Keras model which will drive the ML and NN functionality of this object. The input should be (None, max_words, vector_dim...) where 'max_words' is the maximum number of embeddings per input and vector_dim is the dimension of each embedding.
         :param input_shape: The shape of each input
         :param metrics: The metrics tracked by the model durring training and evaluation.
         :param embedding: The dictionary used to convert words to numerical vectors. If None, its default, the default embedding is used.
         :param max_words: The maximum number of words per string input. If max_words is not reached by a particular input, 0 vectors are appended. Any word above max_words is disgarded.
         '''
+
+        self.input_shape = model.input_shape
+
         # Max Words
-        self.max_words = max_words
+        self.max_words = model.input_shape[1]
 
         # Embedding
+        # If no embedding is specified, try to load default embedding
         if embedding == None:
             self.embedding = get_word_embedding(vocab_size=100000)
 
         else:
             self.embedding = embedding
 
-        # Input shape
+
         # There has got to be a better way of doing this
-        vector_dim = 0
+        # Raising exception if the embedding shape is different from the model's input shape
         for _, value in self.embedding.items():
-             vector_dim = len(value)
-             break
+            embedding_shape = np.shape(value)
+            
+            if embedding_shape != self.input_shape[2:]:
+                raise Exception("Input shape of model", self.input_shape, "is not compatible with embedding shape", embedding_shape,"Model should have input shape of", (None, "#") + embedding_shape)
 
-        self.input_shape = (max_words, vector_dim)
+            break
 
-        # Build model with keras.
-        p = Input(self.input_shape)
-        x = LSTM(64, return_sequences = True)(p)
-        x = Dropout(0.2)(x)
-        x = LSTM(32, return_sequences= True)(x)
-        x = Dropout(0.2)(x)
-        x = LSTM(16, return_sequences= False)(x)
-        x = Dense(1, activation='sigmoid')(x)
-        self.model = keras.Model(p, x)
-        self.model.compile(loss='binary_crossentropy', optimizer='adam', metrics = metrics)
 
+        self.model = model
         
 
         
