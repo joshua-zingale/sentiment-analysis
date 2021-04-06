@@ -13,10 +13,8 @@ class StringModel():
         '''
         Creates the model.
         :param model: The Keras model which will drive the ML and NN functionality of this object. The input should be (None, max_words, vector_dim...) where 'max_words' is the maximum number of embeddings per input and vector_dim is the dimension of each embedding.
-        :param input_shape: The shape of each input
         :param metrics: The metrics tracked by the model durring training and evaluation.
         :param embedding: The dictionary used to convert words to numerical vectors. If None, its default, the default embedding is used.
-        :param max_words: The maximum number of words per string input. If max_words is not reached by a particular input, 0 vectors are appended. Any word above max_words is disgarded.
         '''
 
         self.input_shape = model.input_shape
