@@ -9,17 +9,17 @@ class StringModel():
     '''
     A class which wrappes around a keras model, auto embedding inputs before they are fed into the model.
     '''
-    def __init__(self, model, embedding: dict = None):
+    def __init__(self, model = None, embedding: dict = None):
         '''
         Creates the model.
         :param model: The Keras model which will drive the ML and NN functionality of this object. The input_shape of the model should be (None, max_words, vector_dim...) where 'max_words' is the maximum number of embeddings per input and vector_dim is the dimension of each embedding.
         :param embedding: The dictionary used to convert words to numerical vectors. If None, its default, the default embedding is used.
         '''
+        if model != None:
+            self.input_shape = model.input_shape
 
-        self.input_shape = model.input_shape
-
-        # Max Words
-        self.max_words = model.input_shape[1]
+            # Max Words
+            self.max_words = model.input_shape[1]
 
         # Embedding
         # If no embedding is specified, try to load default embedding
@@ -35,7 +35,7 @@ class StringModel():
         for _, value in self.embedding.items():
             embedding_shape = np.shape(value)
             
-            if embedding_shape != self.input_shape[2:]:
+            if model != None and embedding_shape != self.input_shape[2:]:
                 raise Exception("Input shape of model", self.input_shape, "is not compatible with embedding shape", embedding_shape,"Model should have input shape of", (None, "#") + embedding_shape)
 
             break
@@ -99,6 +99,8 @@ class StringModel():
         :param path: That file path to the stored model.
         '''
         self.model = keras.models.load_model(path)
+
+        self.input_shape = self.model.input_shape
 
         self.max_words = self.model.input_shape[1]
 
