@@ -11,7 +11,7 @@ class StringModel():
     '''
     def __init__(self, model = None, embedding: dict = None):
         '''
-        Creates the model.
+        Creates the model. To load a previous StringModel, first instantiate object and then use self.load.
         :param model: The Keras model which will drive the ML and NN functionality of this object. The input_shape of the model should be (None, max_words, vector_dim...) where 'max_words' is the maximum number of embeddings per input and vector_dim is the dimension of each embedding.
         :param embedding: The dictionary used to convert words to numerical vectors. If None, its default, the default embedding is used.
         '''
