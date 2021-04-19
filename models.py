@@ -55,7 +55,7 @@ class StringModel():
         :param mix: If true, input and output pairs are randomly ordered.
         '''
         if mix_pairs == True:
-            x, y = __mix(x, y)
+            x, y = mix(x, y)
         else:
             x, y = np.array(x), np.array(y, dtype='float32')
         
@@ -106,7 +106,7 @@ class StringModel():
 
 
 
-def __mix(x,y):
+def mix(x,y):
     '''
     Randomize the order in input output pairs
     '''    
