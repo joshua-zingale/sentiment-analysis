@@ -117,3 +117,61 @@ def get_id_from_bussiness_page(url: str) -> str:
 		i += 1
 
 	return business_id
+
+def get_dict_with_query(query: str) -> dict:
+    '''
+    Gets a dictionary of all reviews of each business on every page of a yelp search
+    :param query: string of text search (Example: 'Photo Developing')
+    :return: dictionary: keys are business name, values are list of reviews elements for that business
+        -each list element is a dictionary with form {Review: ..., rating: ...}
+        -easy to insert into json file
+    '''
+
+    # determines url based on search query and loads html
+    url_piece = query.strip().replace(' ', '%20')
+    url = 'https://www.yelp.com/search?find_desc=' + url_piece + '&find_loc=San%20Diego%2C%20CA'
+    page_html = requests.get(url, headers=get_request_headers()).text
+    business_cards = {}
+
+    # scrapes webpage, created dictionary of each business and its webpage
+    # repeats for as many pages of possible for the query's results
+    x = True
+    while x:
+        try:
+            soup = bs(page_html, 'lxml')
+            scrape = soup.find_all("div", {
+                "class": "businessName__09f24__3Wql2 display--inline-block__09f24__3L1EB border-color--default__09f24__1eOdn"})
+
+            for i in range(0, len(scrape)):
+                business_name = scrape[i].find("a")['name']
+                business_website = "https://www.yelp.com/" + scrape[i].find("a")['href']
+                business_cards[business_name] = business_website
+
+            scrapefornext = soup.find_all("div", {
+                "class": "navigation-button-container__09f24__uJHfG border-color--default__09f24__1eOdn"})
+            next_page = scrapefornext[1].find("a")['href']
+            page_html = requests.get(next_page, headers=get_request_headers()).text
+        except:
+            x = False
+
+    # for each business in dictionary from above, uses their business link and helper method get_reviews()
+    # to gather all of each business's reviews (text and rating)
+    dumped_reviews = {}
+    for each in business_cards:
+        reviews = get_reviews(business_cards.get(each), -1, -1)
+        business_info = []
+
+        for j in range(0, len(reviews) - 1):
+            review_info = {}
+
+            review_text = reviews[j]['comment']['text']
+            star_rating = reviews[j]['rating']
+            review_info['Review'] = review_text
+            review_info['Rating'] = star_rating
+            business_info.append(review_info)
+
+        dumped_reviews[each] = business_info
+
+    # output dictionary contains each business, a list of all their reviews as dictionaries
+    return dumped_reviews
+
