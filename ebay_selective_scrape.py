@@ -8,7 +8,7 @@ posts = []
 pageNum = 1
 productReviewPage = input("Enter Ebay Product Review Page:")
 
-inputPageNum = input("Enter the number of pages to scrape")
+inputPageNum = input("Enter the number of pages to scrape:")
 while pageNum <= int(inputPageNum):
     pageEquals = productReviewPage.index('=')
     # Ebay specific sorting tags: '?sort=-rating' --> sort highest ratings first / '&sort=%2Brating' --> sort lowest ratings first
