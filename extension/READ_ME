@@ -6,17 +6,21 @@ Brython Documentation: https://brython.info/static_doc/en/intro.html
         While in the development phase, it is possible to pass an argument to the brython() function: 1 to have the error messages displayed to the web browser console, 2 to also get the Javascript code displayed along with the error.
       - handling imports: https://brython.info/static_doc/en/import.html
       
+Downloads: https://brython.info/static_doc/en/install.html
+Local installation: pip install brython
+CPython Package? Might be needed for imports
+      
 Limitations of the "file protocol": https://brython.info/static_doc/en/file_or_http.html
   -external scripts cannot be loaded with the syntax <script type="text/python" src="test.py"></script>
   -it is not possible to import modules or packages located in the same directory as the application
   -files cannot be opened and read with open()
   The reason is that these features rely on Ajax calls to get the modules / packages source code, or the file contents; and browsers do not allow making Ajax calls when the protocol is "file".
   With this protocol, it is always possible to import the modules in the standard library if the file brython_stdlib.js is loaded in the page, as well as Brython packages, or the modules bundled in file brython_modules.js created by the command python -m brython --modules (cf. section import implementation).
-      
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------      
 Goal: Develop a chrome extension to execute functions within model (model.load(), model.predict())
 (User Clicks Extension, Inserts a highlighted piece of text into popup, receives an output)
 1) Create the standard javascript extension frame and load within chrome
-  - manifest.json
+  - manifest.json --> Contains general extension info: name, version, icon, background, options_page, browser_action, permissions
   - foreground.js / background.js --> I don't think we have to deal much with changing states between these two so whatever is in there currently may be irrelevant.
   - options.js
   - popup.js --> Where the script will be implemented. 
@@ -29,4 +33,6 @@ Goal: Develop a chrome extension to execute functions within model (model.load()
   - required: refer to line 5-7 
      - ***CUREENT PROBLEM***: Content Security Policy directive: "script-src 'self' blob: filesystem:". 
      Either the 'unsafe-inline' keyword, a hash ('sha256-...'), or a nonce ('nonce-...') is required to enable inline execution. 
-     
+
+Current Problems: 
+- unsure how imports will work in regards to where I need to put them
