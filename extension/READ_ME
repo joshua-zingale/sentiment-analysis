@@ -17,7 +17,7 @@ Goal: Develop a chrome extension to execute functions within model (model.load()
 (User Clicks Extension, Inserts a highlighted piece of text into popup, receives an output)
 1) Create the standard javascript extension frame and load within chrome
   - manifest.json
-  - foreground.js / background.js 
+  - foreground.js / background.js --> I don't think we have to deal much with changing states between these two so whatever is in there currently may be irrelevant.
   - options.js
   - popup.js --> Where the script will be implemented. 
 2) create user-extension.py 
