@@ -1,4 +1,6 @@
 --Overview--
+***I had errors installing tensorflowjs so this is what I looked into. If brython brython is unfixable then some of this work can still be used for importing the keras model if 
+I have more time. 
 Brython Documentation: https://brython.info/static_doc/en/intro.html
       - Allows python code to be written in .js files
       - When extension is clicked, 
