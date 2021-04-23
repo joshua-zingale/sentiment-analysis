@@ -12,7 +12,7 @@ x = np.array([datum['Review'] for datum in data])
 
 y = np.array([1 if datum['Rating'] == 5 else 0 for datum in data])
 
-inputs = keras.layers.Input(shape= (160,50))
+inputs = keras.layers.Input(shape= (80,50))
 
 t = keras.layers.LSTM(64, return_sequences = True)(inputs)
 
