@@ -11,7 +11,7 @@ review based on the text within the review.
 ➢ Files:
 
   - *data/* contains training data
-  - *extension/* contains files to an uncomplete chrome extension
+  - *extension/* contains files to an uncompleted chrome extension
   - *models/SM_LSTM_90* contains an LSTM model which can be loaded by a StringModel. It was trained on data/26064_yelp_reviews.json. It has 90% accracy on a testing set of 1000 reviews set apart from the training data. 
   - *creating_model.py* is the script used to build SM_LSTM_90 .
   - *ebay_selective_scrape.py* is a script to scrape Ebay listings for reviews.
